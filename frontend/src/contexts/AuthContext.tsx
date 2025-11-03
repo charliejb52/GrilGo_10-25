@@ -1,7 +1,6 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { useStore } from "../store/useStore";
-import type { User } from "../types";
 
 interface AuthContextType {
   signUp: (email: string, password: string, name: string) => Promise<void>;

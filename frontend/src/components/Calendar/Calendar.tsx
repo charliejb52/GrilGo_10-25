@@ -28,7 +28,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const timezone = currentBusiness?.timezone || "America/New_York";
-  const calendarDays = getCalendarDays(selectedDate, timezone);
+  const calendarDays = getCalendarDays(selectedDate);
 
   useEffect(() => {
     if (currentBusiness) {

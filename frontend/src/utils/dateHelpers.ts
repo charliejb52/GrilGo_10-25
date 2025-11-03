@@ -16,7 +16,7 @@ import {
 } from 'date-fns';
 import { formatInTimeZone, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
 
-export function getCalendarDays(date: Date, timezone: string = 'America/New_York') {
+export function getCalendarDays(date: Date) {
   const start = startOfWeek(startOfMonth(date));
   const end = endOfWeek(endOfMonth(date));
   
