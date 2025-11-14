@@ -77,27 +77,34 @@ export const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
       // If email is provided, create auth user via backend API
       if (email.trim()) {
         try {
-          const response = await fetch(
-            `/api/businesses/${currentBusiness.id}/employees`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${
-                  (
-                    await supabase.auth.getSession()
-                  ).data.session?.access_token
-                }`,
-              },
-              body: JSON.stringify({
-                employeeId: employeeData.id,
-                email: email.trim(),
-              }),
-            }
-          );
+          // Use Railway backend URL in production, proxy in development
+          const apiUrl = import.meta.env.VITE_API_URL || "";
+          const backendUrl = apiUrl || "http://localhost:3001";
+          const apiEndpoint = `${backendUrl}/api/businesses/${currentBusiness.id}/employees`;
+
+          const response = await fetch(apiEndpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${
+                (
+                  await supabase.auth.getSession()
+                ).data.session?.access_token
+              }`,
+            },
+            body: JSON.stringify({
+              employeeId: employeeData.id,
+              email: email.trim(),
+            }),
+          });
 
           if (!response.ok) {
-            const errorData = await response.json();
+            let errorData;
+            try {
+              errorData = await response.json();
+            } catch (e) {
+              errorData = { error: await response.text() };
+            }
             console.error("Failed to create auth user:", errorData);
             // Note: We don't fail the entire operation if auth user creation fails
           }

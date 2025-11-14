@@ -34,7 +34,12 @@ export const ChatComposer: React.FC = () => {
         throw new Error("Not authenticated");
       }
 
-      const response = await fetch("/api/parse-shifts", {
+      // Use Railway backend URL in production, proxy in development
+      const apiUrl = import.meta.env.VITE_API_URL || "";
+      const backendUrl = apiUrl || "http://localhost:3001";
+      const apiEndpoint = `${backendUrl}/api/parse-shifts`;
+
+      const response = await fetch(apiEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,11 +59,29 @@ export const ChatComposer: React.FC = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to parse shifts");
+        // Try to parse error response, but handle non-JSON responses
+        let errorMessage = "Failed to parse shifts";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch (e) {
+          // If response is not JSON, get text
+          const text = await response.text();
+          errorMessage = text || errorMessage;
+        }
+        throw new Error(errorMessage);
       }
 
-      const data: ParseShiftsResponse = await response.json();
+      // Parse response, handle non-JSON responses
+      let data: ParseShiftsResponse;
+      try {
+        const responseText = await response.text();
+        data = JSON.parse(responseText);
+      } catch (e) {
+        throw new Error(
+          `Invalid response from server: ${response.status} ${response.statusText}`
+        );
+      }
       setPreviewData(data);
       setIsPreviewOpen(true);
     } catch (err: any) {

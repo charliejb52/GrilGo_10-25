@@ -196,6 +196,19 @@ The application will be available at:
 
 ## Troubleshooting
 
+### Email Confirmation Required
+
+**Problem**: After signup, login fails with authentication error.
+
+**Solution**: Disable email confirmation for development:
+
+1. Go to Supabase Dashboard → Authentication → Settings → Email Auth
+2. Turn OFF "Confirm email"
+3. Save
+4. Try signing up and logging in again
+
+⚠️ **Remember to re-enable this for production!**
+
 ### RLS Errors
 
 If you see "permission denied" errors, verify:
