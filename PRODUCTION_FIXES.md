@@ -180,6 +180,51 @@ Run these checks to verify everything:
    - Wait for deployment to complete
 4. **Test Again**: Try the AI generator - should work now!
 
+**🔍 Debugging Steps** (if still not working):
+
+1. **Check Browser Console**:
+
+   - Open deployed app → Press F12 → Console tab
+   - Try AI generator
+   - Look for errors (red text)
+   - Check what URL is being called
+
+2. **Check Network Tab**:
+
+   - F12 → Network tab
+   - Try AI generator
+   - Find the request to `/api/parse-shifts`
+   - Check:
+     - **Request URL**: Should be your Railway URL, NOT `/api/parse-shifts`
+     - **Status Code**: 200 = success, 404 = wrong URL, 500 = server error, CORS = blocked
+     - **Response**: Should be JSON, not HTML
+
+3. **Verify Environment Variable**:
+
+   - Vercel → Settings → Environment Variables
+   - Make sure `VITE_API_URL` is:
+     - ✅ Set correctly (no trailing slash!)
+     - ✅ Assigned to **Production** environment
+     - ✅ Saved
+   - **Redeploy** after making changes
+
+4. **Test Backend Directly**:
+
+   - Visit `https://your-railway-url.up.railway.app/health` in browser
+   - Should see: `{"status":"ok","timestamp":"..."}`
+   - If you see HTML or error, backend isn't running
+
+5. **Clear Cache**:
+   - Hard refresh: Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac)
+   - Or clear browser cache completely
+
+**Common Mistakes**:
+
+- ❌ Forgetting to redeploy after adding env var
+- ❌ Adding trailing slash to Railway URL (`https://app.up.railway.app/` ❌)
+- ❌ Setting env var only for "Development", not "Production"
+- ❌ Not clearing browser cache after redeploy
+
 **To Find Your Railway Backend URL**:
 
 1. Go to Railway Dashboard

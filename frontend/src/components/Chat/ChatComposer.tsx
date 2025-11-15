@@ -4,6 +4,7 @@ import { useStore } from "../../store/useStore";
 import { Button } from "../common/Button";
 import { ShiftPreviewModal } from "../Modals/ShiftPreviewModal";
 import { format } from "date-fns";
+import { getApiEndpoint } from "../../utils/api";
 import type { ParseShiftsResponse, ParsedShift } from "../../types";
 
 export const ChatComposer: React.FC = () => {
@@ -34,10 +35,15 @@ export const ChatComposer: React.FC = () => {
         throw new Error("Not authenticated");
       }
 
-      // Use Railway backend URL in production, proxy in development
-      const apiUrl = import.meta.env.VITE_API_URL || "";
-      const backendUrl = apiUrl || "http://localhost:3001";
-      const apiEndpoint = `${backendUrl}/api/parse-shifts`;
+      // Get API endpoint (handles both production and development)
+      const apiEndpoint = getApiEndpoint("/parse-shifts");
+
+      // Always log in production to help debug
+      console.log("[ChatComposer] API Endpoint:", apiEndpoint);
+      console.log(
+        "[ChatComposer] VITE_API_URL:",
+        import.meta.env.VITE_API_URL || "NOT SET"
+      );
 
       const response = await fetch(apiEndpoint, {
         method: "POST",

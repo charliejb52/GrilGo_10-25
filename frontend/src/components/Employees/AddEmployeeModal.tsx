@@ -6,6 +6,7 @@ import { Button } from "../common/Button";
 import { Input } from "../common/Input";
 import { validateEmail, validateEmployeeName } from "../../utils/validation";
 import { generateEmployeeColor } from "../../utils/colorGenerator";
+import { getApiEndpoint } from "../../utils/api";
 
 interface AddEmployeeModalProps {
   isOpen: boolean;
@@ -77,10 +78,10 @@ export const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
       // If email is provided, create auth user via backend API
       if (email.trim()) {
         try {
-          // Use Railway backend URL in production, proxy in development
-          const apiUrl = import.meta.env.VITE_API_URL || "";
-          const backendUrl = apiUrl || "http://localhost:3001";
-          const apiEndpoint = `${backendUrl}/api/businesses/${currentBusiness.id}/employees`;
+          // Get API endpoint (handles both production and development)
+          const apiEndpoint = getApiEndpoint(
+            `/businesses/${currentBusiness.id}/employees`
+          );
 
           const response = await fetch(apiEndpoint, {
             method: "POST",
